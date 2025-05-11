@@ -14,8 +14,8 @@ public class QRCodeGenerator {
 
     public static void main(String[] args) {
         try {
-            String productCode = "PROD123"; // this would come from DB later
-            String filePath = "QRCode.png"; // you can give full path if you want
+            String productCode = "PROD123"; 
+            String filePath = "QRCode.png"; 
             int width = 300;
             int height = 300;
 
