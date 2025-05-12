@@ -5,17 +5,19 @@ public class Product {
     private String name;
     private String status;
     private String qrCode; 
+    private double price;
 
     
     public Product() {}
 
-    public Product(int id, String name, String status, String qrCode) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.qrCode = qrCode;
-    }
 
+public Product(int id, String name, String status, String qrCode, double price) {
+    this.id = id;
+    this.name = name;
+    this.status = status;
+    this.qrCode = qrCode;
+    this.price = price;
+}
 
     public int getId() {
         return id;
@@ -44,7 +46,13 @@ public class Product {
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
     }
+    public double getPrice() {
+        return price;
+    }
 
+    public void setPrice(double price) {
+        this.price = price;
+    }
     @Override
     public String toString() {
         return "Product [id=" + id + ", name=" + name + ", status=" + status + ", qrCode=" + qrCode + "]";
