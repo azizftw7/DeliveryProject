@@ -6,9 +6,9 @@ public class ProductDAOTest {
         ProductDAO dao = new ProductDAO();
 
         Product testProduct = new Product();
-        testProduct.setName("Gaming Mouse");
+        testProduct.setName(" pc");
         testProduct.setStatus("pending");
-        testProduct.setQrCode("mouseYZ"); // This will be encoded
+        testProduct.setQrCode("pc574pc"); // This will be encoded
         testProduct.setPrice(49.99);
 
         dao.insertProduct(testProduct);

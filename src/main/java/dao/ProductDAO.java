@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,17 +17,25 @@ import util.QRCodeGenerator;
 public class ProductDAO {
 
 	public void insertProduct(Product product) {
-	    String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-	    String qrCodeText = product.getName().replaceAll("[^a-zA-Z0-9]", "_") + "-" + timestamp;
-	    String filePath = "/webapp/qr-codes/" + qrCodeText + ".png";
+		String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		String code = product.getName().replaceAll("[^a-zA-Z0-9]", "_") + "-" + timestamp;
+		String qrCodeText = "http://localhost:8080/deliveryProject/scanQRCode?code=" + code;
+
+		String projectRoot = System.getProperty("user.dir");
+		String filePath = projectRoot + "/src/main/webapp/qr-codes/" + code + ".png";
+
 
 	    try {
+	    	File dir = new File(projectRoot + "/src/main/webapp/qr-codes/");
+	    	if (!dir.exists()) {
+	    	    dir.mkdirs(); // make the directory if it doesn't exist
+	    	}
 	       
 	        QRCodeGenerator.generateQRCodeImage(qrCodeText, 250, 250, filePath);
 	        System.out.println("QR Code image created: " + filePath);
 
 	        // Set the code into the product before inserting
-	        product.setQrCode(qrCodeText);
+	        product.setQrCode(code);
 
 	        // Insert product into DB
 	        String query = "INSERT INTO products (name, status, code, price) VALUES (?, ?, ?, ?)";
@@ -69,6 +78,7 @@ public class ProductDAO {
                 product.setName(rs.getString("name"));
                 product.setStatus(rs.getString("status"));
                 product.setQrCode(rs.getString("code"));
+                product.setPrice(rs.getDouble("price"));
             }
 
         } catch (SQLException e) {
@@ -77,6 +87,23 @@ public class ProductDAO {
 
         return product;
     }
+    public void updateProductStatusToBought(Product product) {
+    	 String query = "UPDATE products SET status = ? WHERE code = ?";
+    	    try (Connection connection = DBConnection.getConnection();
+    	         PreparedStatement statement = connection.prepareStatement(query)) {
+    	        
+    	        statement.setString(1, "bought"); // Mark as bought
+    	        statement.setString(2, product.getQrCode()); // Use the QR code to identify the product
+    	        
+    	        int rowsUpdated = statement.executeUpdate();
+    	        if (rowsUpdated > 0) {
+    	            System.out.println("Product status updated to 'bought'.");
+    	        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Product> getAllProducts() {
         List<Product> productList = new ArrayList<>();
         
